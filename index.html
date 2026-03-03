@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday!</title>
+    <style>
+        body {
+            font-family: "Verdana", sans-serif;
+            background-color: #0051ba;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            border: 5px solid #ffda1a;
+            position: relative;
+            z-index: 1;
+            max-height: 90vh;
+            /* Damit es auf kleinen Screens nicht überläuft */
+            overflow-y: auto;
+        }
+
+        h1,
+        h2 {
+            color: #0051ba;
+        }
+
+        img {
+            max-width: 100%;
+            /* Passt sich der Containerbreite an */
+            height: auto;
+            margin: 10px auto;
+            display: block;
+            border-radius: 5px;
+            border: 2px solid #eee;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            margin: 10px 0;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        button.nav-btn {
+            background-color: #0051ba;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button.nav-btn:hover {
+            background-color: #003f91;
+        }
+
+        /* Styles für das Kachel-Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tile-btn {
+            background-color: #0051ba;
+            color: white;
+            border: 2px solid #003f91;
+            padding: 15px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: transform 0.1s;
+            min-height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tile-btn:active {
+            transform: scale(0.95);
+            background-color: #003f91;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .hint {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Styles für das Bestrafungs-Minispiel */
+        #penalty-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffda1a;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            text-align: center;
+            color: white;
+        }
+
+        #penalty-text {
+            position: absolute;
+            top: 20%;
+            width: 100%;
+            pointer-events: none;
+            color: #0051ba;
+        }
+
+        #meatball-btn {
+            background: #8b4513;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #5a2d0c;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            transition: top 0.1s, left 0.1s;
+            user-select: none;
+        }
+
+        #meatball-btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Das Minispiel Overlay -->
+    <div id="penalty-overlay">
+        <div id="penalty-text">
+            <h1>HAHA! Das war falsch.</h1>
+            <p>
+                Zur Strafe musst du jetzt im Restaurant helfen. <br />
+                Als <strong>Schweinchen</strong>
+            </p>
+            <br />
+            <p>
+                Iss <strong><span id="counter">20</span></strong> Köttbullar!
+            </p>
+        </div>
+        <div id="meatball-btn" style="top: 50%; left: 50%; transform: translate(-50%, -50%);" onclick="eatMeatball()">
+            Nom!
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Intro -->
+        <div id="step-0">
+            <h1>Hej, Melanie!</h1>
+            <p>Dein Geschenk liegt vor dir, aber oh nein! Wo ist denn dein Inbus? 😱 😱 😱</p>
+            <img src="present.png" alt="Geschenk" />
+            <p>Finde den Inbus, um es zu öffnen!</p>
+            <button class="nav-btn" onclick="nextStep(1)">Los geht's</button>
+        </div>
+
+        <!-- Rätsel 1: MALM Kommode -->
+        <div id="step-1" class="hidden">
+            <h2>Schritt 1: Aufbau</h2>
+            <p>Du hast dir noch eine neue <strong>MALM Kommode mit 4 Schubladen</strong> gekauft (crazy). <br>
+                Wir müssen sie aufbauen, aber du glaubst du hast ne Schraube verloren.</p>
+            <p>
+                Wie viele der eingeblendeten Schrauben werden zum Aufbau benötigt?
+            </p>
+            <img src="schraube.png" alt="Bauteil 100365" />
+            <input type="number" id="ans-1" placeholder="Anzahl" />
+            <br />
+            <button class="nav-btn" onclick="check(1, '24')">Prüfen</button>
+            <p class="hint">Tipp: Such nach der Montageanleitung.</p>
+        </div>
+
+        <!-- Rätsel 2: Markthalle -->
+        <div id="step-2" class="hidden">
+            <h2>Schritt 2: Orientierung</h2>
+            <p>
+                Du schlenderst mal wieder durch den Ikea. 
+                Du bist jetzt durch mit dem <strong>Showroom</strong> oben und gehst die Treppe runter. Aber wo gehts da hin?
+            </p>
+            <p>Wie nennt IKEA diesen Bereich für Deko & Kleinkram?</p>
+            <select id="ans-2">
+                <option value="" disabled selected>Bereich wählen...</option>
+                <option value="LAGER">SB-Lager</option>
+                <option value="FUNDGRUBE">Fundgrube</option>
+                <option value="SCHATZKAMMER">Schatzkammer</option>
+
+                <option value="MARKTHALLE">Markthalle</option>
+                <option value="RESTAURANT">Schweden-Restaurant</option>
+            </select>
+            <br />
+            <button class="nav-btn" onclick="check(2, 'MARKTHALLE')">Prüfen</button>
+        </div>
+
+        <!-- Rätsel 2.5: Der Code -->
+        <div id="step-code" class="hidden">
+            <h2>Schritt 3: Der Sicherheitscode</h2>
+            <p>Die IKEA-Männchen versuchen dir etwas zu sagen. Aber checkst du's?</p>
+
+            <!-- Dein Bild hier -->
+            <img src="code.jpg" alt="IKEA Code" height="50%" />
+
+            <p>Gib den <strong>Code</strong> ein:</p>
+            <input type="number" id="ans-code" placeholder="" />
+            <br />
+            <!-- Code ist 1312 -->
+            <button class="nav-btn" onclick="checkCode()">Code prüfen</button>
+        </div>
+
+        <!-- Rätsel 3: Fake or Real - RUNDE 1 -->
+        <div id="step-3-1" class="hidden">
+            <h2>Finale: Ist das noch Ikea? <br> Runde 1/3</h2>
+            <p>Finde den <strong>FAKE</strong> Namen!</p>
+            <div class="grid-container">
+                <button class="tile-btn" onclick="checkDirect('3-1', 'GULLIVER', 'SKRÄTT')">GULLIVER</button>
+                <button class="tile-btn" onclick="checkDirect('3-1', 'SNIGLAR', 'SKRÄTT')">SNIGLAR</button>
+                <button class="tile-btn" onclick="checkDirect('3-1', 'BLÅHAJ', 'SKRÄTT')">BLÅHAJ</button>
+                <button class="tile-btn" onclick="checkDirect('3-1', 'SKRÄTT', 'SKRÄTT')">SKRÄTT</button>
+
+            </div>
+        </div>
+
+        <!-- Rätsel 3: Fake or Real - RUNDE 2 -->
+        <div id="step-3-2" class="hidden">
+            <h2>Finale: Ist das noch Ikea? <br> Runde 2/3</h2>
+            <p>Lucky. Finde den nächsten <strong>FAKE</strong>!</p>
+            <div class="grid-container">
+                <button class="tile-btn" onclick="checkDirect('3-2', 'POÄNG', 'LØL')">POÄNG</button>
+                <button class="tile-btn" onclick="checkDirect('3-2', 'BESTÅ', 'LØL')">BESTÅ</button>
+                <button class="tile-btn" onclick="checkDirect('3-2', 'LØL', 'LØL')">LØL</button>
+                <button class="tile-btn" onclick="checkDirect('3-2', 'STRANDMON', 'LØL')">STRANDMON</button>
+            </div>
+        </div>
+
+        <!-- Rätsel 3: Fake or Real - RUNDE 3 -->
+        <div id="step-3-3" class="hidden">
+            <h2>Finale: Ist das noch Ikea? <br> Runde 3/3!</h2>
+            <p>Noch ein letztes Mal! Wähle den <strong>FAKE</strong> Namen.</p>
+            <div class="grid-container">
+                <button class="tile-btn" onclick="checkDirect('3-3', 'BRIMNES', 'MÖPSLIG')">BRIMNES</button>
+                <button class="tile-btn" onclick="checkDirect('3-3', 'MÖPSLIG', 'MÖPSLIG')">MÖPSLIG</button>
+                <button class="tile-btn" onclick="checkDirect('3-3', 'FARTFULL', 'MÖPSLIG')">FARTFULL</button>
+                <button class="tile-btn" onclick="checkDirect('3-3', 'JOKKMOKK', 'MÖPSLIG')">JOKKMOKK</button>
+            </div>
+        </div>
+
+        <!-- Ende -->
+        <div id="step-4" class="hidden">
+            <h1>Mashallah!</h1>
+            <p>Du hast den Inbus gefunden und alle Rätsel gelöst.</p>
+            <img src="inbus.png" alt="inbus" />
+            <p>Hier ist dein Geschenk:</p>
+            <a href="#" target="_blank" id="link" style="
+            background: #ffda1a;
+            color: #0051ba;
+            padding: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            border-radius: 5px;
+            margin-top: 20px;
+          ">
+                Gib her dat Ding!
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let meatballCount = 0;
+        let penaltyBase = 20;
+
+        // STEP NAVIGATION (Zeigt nur den Schritt an, der angefordert wird)
+        function showStep(stepId) {
+            document.querySelectorAll('[id^="step-"]').forEach((el) => {
+                el.classList.add("hidden");
+            });
+            document.getElementById("step-" + stepId).classList.remove("hidden");
+        }
+
+        // WRAPPER für Buttons im HTML
+        function nextStep(stepId) {
+            showStep(stepId);
+        }
+
+        // STANDARD CHECK (Rätsel 1 & 2)
+        function check(currentStep, correctAnswer) {
+            const input = document.getElementById("ans-" + currentStep);
+            const val = input.value.trim().toUpperCase();
+
+            let isCorrect = false;
+            if (Array.isArray(correctAnswer)) isCorrect = correctAnswer.includes(val);
+            else isCorrect = val === correctAnswer;
+
+            if (isCorrect) {
+                // Logik für den nächsten Schritt
+                if (currentStep === 1) showStep(2);
+                else if (currentStep === 2) showStep("code"); // Von Rätsel 2 zum Code-Rätsel
+            } else {
+                startPenalty();
+            }
+        }
+
+        // CODE CHECK (Rätsel 2.5)
+        function checkCode() {
+            const val = document.getElementById("ans-code").value.trim();
+            if (val === "1312") {
+                showStep("3-1"); // Weiter zum Finale
+            } else {
+                startPenalty();
+            }
+        }
+
+        // FINALE CHECK (Buttons)
+        function checkDirect(currentStep, clickedValue, correctAnswer) {
+            if (clickedValue === correctAnswer) {
+                // Logik für den nächsten Schritt im Finale
+                if (currentStep === "3-1") showStep("3-2");
+                else if (currentStep === "3-2") showStep("3-3");
+                else if (currentStep === "3-3"){ doMath(); showStep("4")};
+            } else {
+                startPenalty();
+            }
+        }
+
+        // --- Minigame Logik ---
+        function startPenalty() {
+            meatballCount = penaltyBase;
+            document.getElementById("counter").innerText = meatballCount;
+
+            const btn = document.getElementById("meatball-btn");
+            btn.style.top = "50%";
+            btn.style.left = "50%";
+            btn.style.transform = "translate(-50%, -50%)";
+
+            document.getElementById("penalty-overlay").style.display = "flex";
+            penaltyBase += 10;
+        }
+
+        function eatMeatball() {
+            meatballCount--;
+            document.getElementById("counter").innerText = meatballCount;
+            const btn = document.getElementById("meatball-btn");
+
+            if (meatballCount <= 0) {
+                document.getElementById("penalty-overlay").style.display = "none";
+                return;
+            }
+
+            const buttonSize = 100;
+            const padding = 20;
+            const maxWidth = window.innerWidth - buttonSize - padding;
+            const maxHeight = window.innerHeight - buttonSize - padding;
+
+            const randomX = Math.floor(Math.random() * maxWidth) + padding / 2;
+            const randomY = Math.floor(Math.random() * maxHeight) + padding / 2;
+
+            btn.style.transform = "none";
+            btn.style.left = randomX + "px";
+            btn.style.top = randomY + "px";
+        }
+        const word = "aHR0cHM6Ly9yLmVtYWlsLnd1bnNjaGd1dHNjaGVpbi5jb20vdHIvY2wvZTB5MkFOUFJTLWZzblZFeF9IeXE0RGkzTThnTUVqTWJnaWFPY1puWW5oekJsUFBfN0lFUnp3enNzSUM5aW9JUUlIekg1cU9ESWxaQUwwcHU4TEF5QXRXQ3p0N25wNFdVRDM5V1M1b1JiNjU5RDZZUUhpYkJtb0ZvY2J4LVRYVFROaDlRZ3ItVXlTQ1c4Y2s1VE90ZmNxa3JsZnczVF95WWwzOS1UWkZSOFZfY0pvUEliYnVZOVZib3QtZkhMRFZ4Q0xYdFRiaGNTR3F1Z045TERnWk5LX3RBRVhfR1JQVTQ2VEtQOXF6MmoxVFpDQUp5R0JuRngzVXNyZ09Ga3JKd2pINWVUZVJKdE1CT0xDWTFoRllMZWNZY3FoNk9aazNaYXowOFZNR1gySDNQQVdVa05adDVqVjJad1k0TmM5NmJNOG5jamx2UnRKWkpwSGtka3B1Y0UzV2lBVXl1dEhtOU42ckVDRG5jLXFScmR3MTJOLUJ0WTNmRE8tZk05WFJvSkE3b2o2WjZwNTJRX001cFhEX1FfajhXX3FIU05ScHExWWNwaXdKd3plWnpaNWl2SXRYTXlNWE1DbXlTLUJsM25XRk9SRC1hN3ZSSkJQSTNMVUhOaG5hbUZGeGlkc3pRdUs0dmlmQnpyU1Q1OWJNRFYzdXNydks4S0VkY3pqMHdtNDdYZjNaekYzMGUwWG5ickRURjY1NktiUDVmNThOWlR3"; 
+
+        function doMath() {
+            const link = document.getElementById("link");
+            // Verwandelt den Salat zurück in einen Link
+            link.href = atob(word); 
+        }
+    </script>
+</body>
+
+</html>
